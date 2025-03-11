@@ -21,8 +21,6 @@ struct ChessClockView: View {
     @State private var isPlayerTwoClockActive: Bool = false
     @State private var playerOneTimerActive: Bool = false
     @State private var playerTwoTimerActive: Bool = false
-    @State private var playerOneClockStopped = false
-    @State private var playerTwoClockStopped = false
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -35,7 +33,7 @@ struct ChessClockView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
-                // Första klockan (Player 1)
+                // Första klockan (Player 1) med rotation för att vända den
                 Circle()
                     .fill(Color.white)
                     .frame(width: 250, height: 250)
@@ -57,6 +55,7 @@ struct ChessClockView: View {
                         toggleClock(for: .playerOne)
                     }
                     .shadow(radius: 10)
+                    .rotationEffect(Angle(degrees: 180)) // Vänder klockan för Player 1
                 
                 Spacer() // Skapar mellanrum mellan klockorna
                 
