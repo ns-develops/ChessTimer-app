@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import UIKit
 
 enum TimeType {
     case classical, bullet, suddenDeath, freeGame
@@ -21,7 +22,7 @@ struct ContentView: View {
 struct TimeSelectionView: View {
     @State private var selectedTimeType: TimeType = .classical
 
-    // Färg för knapparna (samma som för "Next"-knappen)
+    
     private let buttonColor = Color(red: 0.0, green: 0.0, blue: 0.3)
 
     var body: some View {
@@ -33,20 +34,25 @@ struct TimeSelectionView: View {
                     .edgesIgnoringSafeArea(.all)
 
                 VStack {
+                 
+                    GIFImageView(gifName: "loop")
+                        .frame(width: 80, height: 80)
+                        .padding(.bottom, 10)
+
                     Text("Select Time Mode")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
+                        .font(.title)
+                        .foregroundColor(.black)
                         .padding()
 
-                    // Använd LazyVGrid för att skapa fyra fyrkantiga knappar
-                    LazyVGrid(columns: [GridItem(.fixed(150)), GridItem(.fixed(150))], spacing: 20) {
+          
+                    LazyVGrid(columns: [GridItem(.fixed(120)), GridItem(.fixed(120))], spacing: 15) {
                         Button(action: {
                             selectedTimeType = .classical
                         }) {
                             Text("Classical (5 min)")
-                                .font(.title)
+                                .font(.body)
                                 .padding()
-                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .frame(width: 120, height: 120)
                                 .background(selectedTimeType == .classical ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
@@ -56,9 +62,9 @@ struct TimeSelectionView: View {
                             selectedTimeType = .bullet
                         }) {
                             Text("Bullet (2 min)")
-                                .font(.title)
+                                .font(.body)
                                 .padding()
-                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .frame(width: 120, height: 120)
                                 .background(selectedTimeType == .bullet ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
@@ -68,9 +74,9 @@ struct TimeSelectionView: View {
                             selectedTimeType = .suddenDeath
                         }) {
                             Text("Sudden Death")
-                                .font(.title)
+                                .font(.body)
                                 .padding()
-                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .frame(width: 120, height: 120)
                                 .background(selectedTimeType == .suddenDeath ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
@@ -80,31 +86,31 @@ struct TimeSelectionView: View {
                             selectedTimeType = .freeGame
                         }) {
                             Text("Free Game")
-                                .font(.title)
+                                .font(.body)
                                 .padding()
-                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .frame(width: 120, height: 120)
                                 .background(selectedTimeType == .freeGame ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
                     }
-                    .padding(.horizontal, 20) // Se till att knapparna inte rör kanterna
+                    .padding(.horizontal, 15)
 
                     NavigationLink(
                         destination: NameEntryView(selectedTimeType: selectedTimeType),
                         label: {
                             Text("Next")
-                                .font(.title)
+                                .font(.title2)
                                 .padding()
-                                .frame(maxWidth: 200)
-                                .background(buttonColor) // Samma blå som knapparna
+                                .frame(maxWidth: 150)
+                                .background(buttonColor)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
                     )
-                    .padding(.top, 20) // Lägg till lite utrymme ovanför "Next"-knappen
+                    .padding(.top, 15)
                 }
-                .padding(.top, 50) // Lite extra padding för att justera innehållet
+                .padding(.top, 40)
             }
         }
     }
@@ -124,17 +130,17 @@ struct NameEntryView: View {
 
             VStack {
                 Text("Enter Player Names")
-                    .font(.largeTitle)
+                    .font(.title)
                     .foregroundColor(.white)
                     .padding()
 
-                VStack(spacing: 20) {
+                VStack(spacing: 15) {
                     TextField("Enter Player 1's name", text: $playerOneName)
                         .padding()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .background(Color.white)
                         .cornerRadius(10)
-                        .frame(maxWidth: 300)
+                        .frame(maxWidth: 250)
                         .multilineTextAlignment(.center)
 
                     TextField("Enter Player 2's name", text: $playerTwoName)
@@ -142,18 +148,18 @@ struct NameEntryView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .background(Color.white)
                         .cornerRadius(10)
-                        .frame(maxWidth: 300)
+                        .frame(maxWidth: 250)
                         .multilineTextAlignment(.center)
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 30)
 
                 NavigationLink(
                     destination: ChessClockView(playerOneName: playerOneName, playerTwoName: playerTwoName, timeType: selectedTimeType),
                     label: {
                         Text("Start Game")
-                            .font(.title)
+                            .font(.title2)
                             .padding()
-                            .frame(maxWidth: 200)
+                            .frame(maxWidth: 150)
                             .background(Color(red: 0.0, green: 0.0, blue: 0.3))
                             .foregroundColor(.white)
                             .cornerRadius(10)
@@ -163,8 +169,8 @@ struct NameEntryView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .center)
-            .padding(.top, 40)
-            .padding(.horizontal, 20) // Se till att namn inmatning inte rör kanterna
+            .padding(.top, 30)
+            .padding(.horizontal, 15)
         }
     }
 }
@@ -211,7 +217,7 @@ struct ChessClockView: View {
             VStack {
                 Circle()
                     .fill(Color.white)
-                    .frame(width: 250, height: 250)
+                    .frame(width: 200, height: 200)
                     .overlay(
                         Circle()
                             .stroke(Color.black, lineWidth: 5)
@@ -219,10 +225,10 @@ struct ChessClockView: View {
                     .overlay(
                         VStack {
                             Text(playerOneName)
-                                .font(.headline)
+                                .font(.subheadline)
                                 .foregroundColor(.black)
                             Text(formatTime(timeRemaining: playerOneTime))
-                                .font(.largeTitle)
+                                .font(.title2)
                                 .foregroundColor(.black)
                         }
                     )
@@ -236,7 +242,7 @@ struct ChessClockView: View {
 
                 Circle()
                     .fill(Color.white)
-                    .frame(width: 250, height: 250)
+                    .frame(width: 200, height: 200)
                     .overlay(
                         Circle()
                             .stroke(Color.black, lineWidth: 5)
@@ -244,10 +250,10 @@ struct ChessClockView: View {
                     .overlay(
                         VStack {
                             Text(playerTwoName)
-                                .font(.headline)
+                                .font(.subheadline)
                                 .foregroundColor(.black)
                             Text(formatTime(timeRemaining: playerTwoTime))
-                                .font(.largeTitle)
+                                .font(.title2)
                                 .foregroundColor(.black)
                         }
                     )
@@ -316,6 +322,54 @@ struct ChessClockView: View {
 
     enum Player {
         case playerOne, playerTwo
+    }
+}
+
+struct GIFImageView: UIViewRepresentable {
+    var gifName: String
+
+    func makeUIView(context: Context) -> UIImageView {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+
+
+        if let gifData = NSDataAsset(name: gifName)?.data {
+            let image = UIImage.gif(data: gifData)
+            imageView.image = image
+        }
+
+        return imageView
+    }
+
+    func updateUIView(_ uiView: UIImageView, context: Context) {}
+}
+
+extension UIImage {
+    class func gif(data: Data) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+        var images = [UIImage]()
+        var duration: TimeInterval = 0.0
+
+        let count = CGImageSourceGetCount(source)
+        for i in 0..<count {
+            guard let cgImage = CGImageSourceCreateImageAtIndex(source, i, nil) else { continue }
+            let delaySeconds = UIImage.delayForImageAtIndex(i, source: source)
+            duration += delaySeconds
+            images.append(UIImage(cgImage: cgImage))
+        }
+
+        return UIImage.animatedImage(with: images, duration: duration)
+    }
+
+    class func delayForImageAtIndex(_ index: Int, source: CGImageSource) -> TimeInterval {
+        var delay = 0.1
+        let properties = CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [CFString: Any]
+        let gifProperties = properties?[kCGImagePropertyGIFDictionary] as? [CFString: Any]
+        let delayTime = gifProperties?[kCGImagePropertyGIFUnclampedDelayTime] as? NSNumber
+        if let delayTime = delayTime {
+            delay = delayTime.doubleValue
+        }
+        return delay
     }
 }
 
