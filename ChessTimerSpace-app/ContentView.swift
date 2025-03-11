@@ -19,7 +19,7 @@ struct ContentView: View {
 }
 
 struct TimeSelectionView: View {
-    @State private var selectedTimeType: TimeType = .classical // Default tidtyp är Classical
+    @State private var selectedTimeType: TimeType = .classical
 
     var body: some View {
         NavigationView {
@@ -187,7 +187,7 @@ struct ChessClockView: View {
         if let soundURL = Bundle.main.url(forResource: "buttonClick", withExtension: "mp3") {
             do {
                 audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
-                audioPlayer?.prepareToPlay() // Förbereder ljudet för uppspelning
+                audioPlayer?.prepareToPlay()
             } catch {
                 print("Error loading sound file: \(error)")
             }
@@ -276,7 +276,7 @@ struct ChessClockView: View {
     }
 
     private func toggleClock(for player: Player) {
-        // Spela ljud varje gång en spelare trycker på sin klocka
+    
         audioPlayer?.play()
 
         switch player {
