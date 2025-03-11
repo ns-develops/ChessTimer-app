@@ -9,12 +9,70 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        ChessClockView()
+       
+        NameEntryView()
+    }
+}
+
+struct NameEntryView: View {
+    @State private var playerOneName: String = ""
+    @State private var playerTwoName: String = ""
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+             
+                Image("stars")
+                    .resizable()
+                    .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    Text("Enter Player Names")
+                        .font(.largeTitle)
+                        .padding()
+                        .foregroundColor(.white)
+              
+                    TextField("Enter Player 1's name", text: $playerOneName)
+                        .padding()
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundColor(.black)
+                        .background(Color.white)
+                        .padding(.bottom, 30)
+                    
+                
+                    TextField("Enter Player 2's name", text: $playerTwoName)
+                        .padding()
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .foregroundColor(.black)
+                        .background(Color.white)
+                        .padding(.bottom, 50)
+                    
+ 
+                    NavigationLink(
+                        destination: ChessClockView(playerOneName: playerOneName, playerTwoName: playerTwoName),
+                        label: {
+                            Text("Start Game")
+                                .font(.title)
+                                      .padding()
+                                      .background(Color(red: 0.0, green: 0.0, blue: 0.3))
+                                      .foregroundColor(.white)
+                                      .cornerRadius(10)
+                        }
+                    )
+                    .padding(.bottom, 50)
+                    .frame(maxWidth: .infinity)
+                    
+                    Spacer()
+                }
+                .padding(.top, 40)
+            }
+        }
     }
 }
 
 struct ChessClockView: View {
-    @State private var playerOneTime: Int = 300 // 5 minuter
+    @State private var playerOneTime: Int = 300 // 5 min
     @State private var playerTwoTime: Int = 300
     @State private var isPlayerOneTurn: Bool = true
     @State private var isPlayerOneClockActive: Bool = false
@@ -22,18 +80,21 @@ struct ChessClockView: View {
     @State private var playerOneTimerActive: Bool = false
     @State private var playerTwoTimerActive: Bool = false
     
+    @State var playerOneName: String
+    @State var playerTwoName: String
+    
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         ZStack {
-            // Bakgrundsbild som täcker hela skärmen
+          
             Image("space2")
                 .resizable()
                 .scaledToFill()
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
-                // Första klockan (Player 1) med rotation för att vända den
+               
                 Circle()
                     .fill(Color.white)
                     .frame(width: 250, height: 250)
@@ -43,7 +104,7 @@ struct ChessClockView: View {
                     )
                     .overlay(
                         VStack {
-                            Text("Player 1")
+                            Text(playerOneName)
                                 .font(.headline)
                                 .foregroundColor(.black)
                             Text(formatTime(timeRemaining: playerOneTime))
@@ -55,11 +116,11 @@ struct ChessClockView: View {
                         toggleClock(for: .playerOne)
                     }
                     .shadow(radius: 10)
-                    .rotationEffect(Angle(degrees: 180)) // Vänder klockan för Player 1
+                    .rotationEffect(Angle(degrees: 180))
                 
-                Spacer() // Skapar mellanrum mellan klockorna
+                Spacer()
                 
-                // Andra klockan (Player 2)
+          
                 Circle()
                     .fill(Color.white)
                     .frame(width: 250, height: 250)
@@ -69,7 +130,7 @@ struct ChessClockView: View {
                     )
                     .overlay(
                         VStack {
-                            Text("Player 2")
+                            Text(playerTwoName)
                                 .font(.headline)
                                 .foregroundColor(.black)
                             Text(formatTime(timeRemaining: playerTwoTime))
@@ -103,18 +164,18 @@ struct ChessClockView: View {
         }
     }
     
-    // Funktion för att växla mellan spelarna när klockan klickas
+
     private func toggleClock(for player: Player) {
         switch player {
         case .playerOne:
             if isPlayerOneClockActive {
-                // Stoppar Player 1:s klocka och startar Player 2:s klocka
+               
                 playerOneTimerActive = false
                 playerTwoTimerActive = true
                 isPlayerOneClockActive = false
                 isPlayerTwoClockActive = true
             } else {
-                // Startar Player 1:s klocka och stoppar Player 2:s klocka
+             
                 playerOneTimerActive = true
                 playerTwoTimerActive = false
                 isPlayerOneClockActive = true
@@ -122,13 +183,12 @@ struct ChessClockView: View {
             }
         case .playerTwo:
             if isPlayerTwoClockActive {
-                // Stoppar Player 2:s klocka och startar Player 1:s klocka
+      
                 playerTwoTimerActive = false
                 playerOneTimerActive = true
                 isPlayerOneClockActive = true
                 isPlayerTwoClockActive = false
             } else {
-                // Startar Player 2:s klocka och stoppar Player 1:s klocka
                 playerTwoTimerActive = true
                 playerOneTimerActive = false
                 isPlayerOneClockActive = false
@@ -137,12 +197,12 @@ struct ChessClockView: View {
         }
     }
     
-    // Enum för att representera varje spelare
+
     enum Player {
         case playerOne, playerTwo
     }
     
-    // Funktion för att formatera tiden till minuter och sekunder
+
     private func formatTime(timeRemaining: Int) -> String {
         let minutes = timeRemaining / 60
         let seconds = timeRemaining % 60
