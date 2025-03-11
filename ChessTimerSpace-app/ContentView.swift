@@ -21,6 +21,9 @@ struct ContentView: View {
 struct TimeSelectionView: View {
     @State private var selectedTimeType: TimeType = .classical
 
+    // Färg för knapparna (samma som för "Next"-knappen)
+    private let buttonColor = Color(red: 0.0, green: 0.0, blue: 0.3)
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -35,15 +38,16 @@ struct TimeSelectionView: View {
                         .foregroundColor(.white)
                         .padding()
 
-                    VStack(spacing: 15) {
+                    // Använd LazyVGrid för att skapa fyra fyrkantiga knappar
+                    LazyVGrid(columns: [GridItem(.fixed(150)), GridItem(.fixed(150))], spacing: 20) {
                         Button(action: {
                             selectedTimeType = .classical
                         }) {
                             Text("Classical (5 min)")
-                                .font(.headline)
+                                .font(.title)
                                 .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(selectedTimeType == .classical ? Color.blue : Color.gray)
+                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .background(selectedTimeType == .classical ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
@@ -52,10 +56,10 @@ struct TimeSelectionView: View {
                             selectedTimeType = .bullet
                         }) {
                             Text("Bullet (2 min)")
-                                .font(.headline)
+                                .font(.title)
                                 .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(selectedTimeType == .bullet ? Color.blue : Color.gray)
+                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .background(selectedTimeType == .bullet ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
@@ -64,10 +68,10 @@ struct TimeSelectionView: View {
                             selectedTimeType = .suddenDeath
                         }) {
                             Text("Sudden Death")
-                                .font(.headline)
+                                .font(.title)
                                 .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(selectedTimeType == .suddenDeath ? Color.blue : Color.gray)
+                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .background(selectedTimeType == .suddenDeath ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
@@ -76,15 +80,15 @@ struct TimeSelectionView: View {
                             selectedTimeType = .freeGame
                         }) {
                             Text("Free Game")
-                                .font(.headline)
+                                .font(.title)
                                 .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(selectedTimeType == .freeGame ? Color.blue : Color.gray)
+                                .frame(width: 150, height: 150) // Fyrkantig knapp
+                                .background(selectedTimeType == .freeGame ? buttonColor : Color.gray)
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
                     }
-                    .padding()
+                    .padding(.horizontal, 20) // Se till att knapparna inte rör kanterna
 
                     NavigationLink(
                         destination: NameEntryView(selectedTimeType: selectedTimeType),
@@ -93,12 +97,14 @@ struct TimeSelectionView: View {
                                 .font(.title)
                                 .padding()
                                 .frame(maxWidth: 200)
-                                .background(Color(red: 0.0, green: 0.0, blue: 0.3))
+                                .background(buttonColor) // Samma blå som knapparna
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }
                     )
+                    .padding(.top, 20) // Lägg till lite utrymme ovanför "Next"-knappen
                 }
+                .padding(.top, 50) // Lite extra padding för att justera innehållet
             }
         }
     }
@@ -158,6 +164,7 @@ struct NameEntryView: View {
             }
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.top, 40)
+            .padding(.horizontal, 20) // Se till att namn inmatning inte rör kanterna
         }
     }
 }
@@ -276,7 +283,6 @@ struct ChessClockView: View {
     }
 
     private func toggleClock(for player: Player) {
-    
         audioPlayer?.play()
 
         switch player {
