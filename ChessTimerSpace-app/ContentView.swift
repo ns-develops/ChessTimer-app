@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-       
         NameEntryView()
     }
 }
@@ -17,54 +16,56 @@ struct ContentView: View {
 struct NameEntryView: View {
     @State private var playerOneName: String = ""
     @State private var playerTwoName: String = ""
-    
+
     var body: some View {
         NavigationView {
             ZStack {
-             
-                Image("stars")
+                Image("stars2")
                     .resizable()
                     .scaledToFill()
                     .edgesIgnoringSafeArea(.all)
-                
+
                 VStack {
                     Text("Enter Player Names")
                         .font(.largeTitle)
-                        .padding()
                         .foregroundColor(.white)
-              
-                    TextField("Enter Player 1's name", text: $playerOneName)
                         .padding()
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .foregroundColor(.black)
-                        .background(Color.white)
-                        .padding(.bottom, 30)
-                    
-                
-                    TextField("Enter Player 2's name", text: $playerTwoName)
-                        .padding()
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .foregroundColor(.black)
-                        .background(Color.white)
-                        .padding(.bottom, 50)
-                    
- 
+
+                    VStack(spacing: 20) {
+                        TextField("Enter Player 1's name", text: $playerOneName)
+                            .padding()
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .frame(maxWidth: 300)
+                            .multilineTextAlignment(.center)
+
+                        TextField("Enter Player 2's name", text: $playerTwoName)
+                            .padding()
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .frame(maxWidth: 300)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.bottom, 40)
+
                     NavigationLink(
                         destination: ChessClockView(playerOneName: playerOneName, playerTwoName: playerTwoName),
                         label: {
                             Text("Start Game")
                                 .font(.title)
-                                      .padding()
-                                      .background(Color(red: 0.0, green: 0.0, blue: 0.3))
-                                      .foregroundColor(.white)
-                                      .cornerRadius(10)
+                                .padding()
+                                .frame(maxWidth: 200)
+                                .background(Color(red: 0.0, green: 0.0, blue: 0.3))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                         }
                     )
-                    .padding(.bottom, 50)
-                    .frame(maxWidth: .infinity)
-                    
+
                     Spacer()
                 }
+                .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 40)
             }
         }
@@ -79,22 +80,20 @@ struct ChessClockView: View {
     @State private var isPlayerTwoClockActive: Bool = false
     @State private var playerOneTimerActive: Bool = false
     @State private var playerTwoTimerActive: Bool = false
-    
+
     @State var playerOneName: String
     @State var playerTwoName: String
-    
+
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+
     var body: some View {
         ZStack {
-          
             Image("space2")
                 .resizable()
                 .scaledToFill()
                 .edgesIgnoringSafeArea(.all)
-            
+
             VStack {
-               
                 Circle()
                     .fill(Color.white)
                     .frame(width: 250, height: 250)
@@ -117,10 +116,9 @@ struct ChessClockView: View {
                     }
                     .shadow(radius: 10)
                     .rotationEffect(Angle(degrees: 180))
-                
+
                 Spacer()
-                
-          
+
                 Circle()
                     .fill(Color.white)
                     .frame(width: 250, height: 250)
@@ -153,7 +151,7 @@ struct ChessClockView: View {
                     playerOneTimerActive = false
                 }
             }
-            
+
             if playerTwoTimerActive {
                 if playerTwoTime > 0 {
                     playerTwoTime -= 1
@@ -163,19 +161,16 @@ struct ChessClockView: View {
             }
         }
     }
-    
 
     private func toggleClock(for player: Player) {
         switch player {
         case .playerOne:
             if isPlayerOneClockActive {
-               
                 playerOneTimerActive = false
                 playerTwoTimerActive = true
                 isPlayerOneClockActive = false
                 isPlayerTwoClockActive = true
             } else {
-             
                 playerOneTimerActive = true
                 playerTwoTimerActive = false
                 isPlayerOneClockActive = true
@@ -183,7 +178,6 @@ struct ChessClockView: View {
             }
         case .playerTwo:
             if isPlayerTwoClockActive {
-      
                 playerTwoTimerActive = false
                 playerOneTimerActive = true
                 isPlayerOneClockActive = true
@@ -196,12 +190,10 @@ struct ChessClockView: View {
             }
         }
     }
-    
 
     enum Player {
         case playerOne, playerTwo
     }
-    
 
     private func formatTime(timeRemaining: Int) -> String {
         let minutes = timeRemaining / 60
