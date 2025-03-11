@@ -6,10 +6,20 @@
 //
 
 import SwiftUI
+import AVFoundation
+
+
+struct ChessApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()  // Gör ContentView till startvy
+        }
+    }
+}
 
 struct ContentView: View {
     var body: some View {
-        NameEntryView()
+        NameEntryView()  // Din NameEntryView som huvudvy
     }
 }
 
@@ -83,6 +93,8 @@ struct ChessClockView: View {
 
     @State var playerOneName: String
     @State var playerTwoName: String
+
+    @State private var audioPlayer: AVAudioPlayer?
 
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -176,6 +188,8 @@ struct ChessClockView: View {
                 isPlayerOneClockActive = true
                 isPlayerTwoClockActive = false
             }
+            playButtonClickSound()
+
         case .playerTwo:
             if isPlayerTwoClockActive {
                 playerTwoTimerActive = false
@@ -187,6 +201,18 @@ struct ChessClockView: View {
                 playerOneTimerActive = false
                 isPlayerOneClockActive = false
                 isPlayerTwoClockActive = true
+            }
+            playButtonClickSound()
+        }
+    }
+
+    private func playButtonClickSound() {
+        if let soundURL = Bundle.main.url(forResource: "buttonClick", withExtension: "mp3") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+                audioPlayer?.play()
+            } catch {
+                print("Error playing sound: \(error.localizedDescription)")
             }
         }
     }
@@ -200,8 +226,4 @@ struct ChessClockView: View {
         let seconds = timeRemaining % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
-}
-
-#Preview {
-    ContentView()
 }

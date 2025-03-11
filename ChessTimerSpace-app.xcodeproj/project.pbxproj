@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		709534942D807F65008726BA /* buttonClick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 709534932D807F65008726BA /* buttonClick.mp3 */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		709534772D80503A008726BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		709534662D805037008726BA /* ChessTimerSpace-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ChessTimerSpace-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		709534762D80503A008726BA /* ChessTimerSpace-appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ChessTimerSpace-appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		709534802D80503A008726BA /* ChessTimerSpace-appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ChessTimerSpace-appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		709534932D807F65008726BA /* buttonClick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = buttonClick.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		7095345D2D805037008726BA = {
 			isa = PBXGroup;
 			children = (
+				709534932D807F65008726BA /* buttonClick.mp3 */,
 				709534682D805037008726BA /* ChessTimerSpace-app */,
 				709534792D80503A008726BA /* ChessTimerSpace-appTests */,
 				709534832D80503A008726BA /* ChessTimerSpace-appUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				709534942D807F65008726BA /* buttonClick.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
