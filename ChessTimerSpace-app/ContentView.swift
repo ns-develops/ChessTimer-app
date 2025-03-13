@@ -252,14 +252,19 @@ struct ChessClockView: View {
         self._suddenDeathTime = State(initialValue: suddenDeathTime)
 
         if timeType == .bullet {
-            self._playerOneTime = State(initialValue: 120) // 2 minutes
-            self._playerTwoTime = State(initialValue: 120) // 2 minutes
+            self._playerOneTime = State(initialValue: 120) // 2 minuter
+            self._playerTwoTime = State(initialValue: 120) // 2 minuter
         } else if timeType == .classical {
-            self._playerOneTime = State(initialValue: 300) // 5 minutes
-            self._playerTwoTime = State(initialValue: 300) // 5 minutes
+            self._playerOneTime = State(initialValue: 300) // 5 minuter
+            self._playerTwoTime = State(initialValue: 300) // 5 minuter
         } else if timeType == .suddenDeath {
-            self._playerOneTime = State(initialValue: Int(suddenDeathTime.timeIntervalSince1970)) // Set based on the sudden death time
-            self._playerTwoTime = State(initialValue: Int(suddenDeathTime.timeIntervalSince1970)) // Same for player 2
+    
+            let calendar = Calendar.current
+            let hour = calendar.component(.hour, from: suddenDeathTime)
+            let minute = calendar.component(.minute, from: suddenDeathTime)
+            let totalSeconds = (hour * 3600) + (minute * 60)
+            self._playerOneTime = State(initialValue: totalSeconds)
+            self._playerTwoTime = State(initialValue: totalSeconds)
         } else {
             self._playerOneTime = State(initialValue: 0)
             self._playerTwoTime = State(initialValue: 0)
@@ -334,7 +339,23 @@ struct ChessClockView: View {
         }
         .onReceive(timer) { _ in
             if !gameEnded {
-                if timeType != .freeGame {
+                if timeType == .suddenDeath {
+                    // För Sudden Death, räknar vi ner från den valda tiden
+                    if playerOneTimerActive && playerOneTime > 0 {
+                        playerOneTime -= 1
+                    } else if playerOneTime <= 0 && playerOneTimerActive {
+                        gameEnded = true
+                        winner = playerTwoName
+                    }
+
+                    if playerTwoTimerActive && playerTwoTime > 0 {
+                        playerTwoTime -= 1
+                    } else if playerTwoTime <= 0 && playerTwoTimerActive {
+                        gameEnded = true
+                        winner = playerOneName
+                    }
+                } else {
+                    // För andra typer av spel (bullet, classical, freeGame)
                     if playerOneTimerActive {
                         if playerOneTime > 0 {
                             playerOneTime -= 1
@@ -351,13 +372,6 @@ struct ChessClockView: View {
                             gameEnded = true
                             winner = playerOneName
                         }
-                    }
-                } else {
-                    if playerOneTimerActive {
-                        playerOneTime += 1
-                    }
-                    if playerTwoTimerActive {
-                        playerTwoTime += 1
                     }
                 }
             }
@@ -392,46 +406,20 @@ struct ChessClockView: View {
         let seconds = timeRemaining % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
-
-    enum Player {
-        case playerOne, playerTwo
-    }
 }
 
-struct GIFImageView: UIViewRepresentable {
-    var gifName: String
-
-    func makeUIView(context: Context) -> UIImageView {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-
-        if let gifData = NSDataAsset(name: gifName)?.data {
-            let image = UIImage.gif(data: gifData)
-            imageView.image = image
-        }
-
-        return imageView
-    }
-
-    func updateUIView(_ uiView: UIImageView, context: Context) {}
+enum Player {
+    case playerOne, playerTwo
 }
 
-extension UIImage {
-    class func gif(data: Data) -> UIImage? {
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
-        var images = [UIImage]()
-        var duration: TimeInterval = 0.0
+struct GIFImageView: View {
+    let gifName: String
 
-        let count = CGImageSourceGetCount(source)
-        for i in 0..<count {
-            guard let cgImage = CGImageSourceCreateImageAtIndex(source, i, nil) else { continue }
-            images.append(UIImage(cgImage: cgImage))
-            let properties = CGImageSourceCopyPropertiesAtIndex(source, i, nil) as? [CFString: Any]
-            let gifProperties = properties?[kCGImagePropertyGIFDictionary] as? [CFString: Any]
-            let delayTime = gifProperties?[kCGImagePropertyGIFUnclampedDelayTime] as? Double ?? 0.1
-            duration += delayTime
-        }
-
-        return UIImage.animatedImage(with: images, duration: duration)
+    var body: some View {
+      
+        Text(gifName)
+            .font(.title)
+            .foregroundColor(.white)
+            .padding()
     }
 }
