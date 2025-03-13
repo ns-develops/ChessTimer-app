@@ -265,7 +265,7 @@ struct ChessClockView: View {
             let totalSeconds = (hour * 3600) + (minute * 60)
             self._playerOneTime = State(initialValue: totalSeconds)
             self._playerTwoTime = State(initialValue: totalSeconds)
-        } else {
+        } else { // Free Game mode: initialize with 0 (time counts upwards)
             self._playerOneTime = State(initialValue: 0)
             self._playerTwoTime = State(initialValue: 0)
         }
@@ -285,6 +285,7 @@ struct ChessClockView: View {
                         .foregroundColor(.white)
                         .padding()
                 } else {
+                    // Player 1 Circle
                     Circle()
                         .fill(Color.white)
                         .frame(width: 200, height: 200)
@@ -306,6 +307,7 @@ struct ChessClockView: View {
 
                     Spacer()
 
+                    // Player 2 Circle
                     Circle()
                         .fill(Color.white)
                         .frame(width: 200, height: 200)
@@ -329,16 +331,26 @@ struct ChessClockView: View {
         }
         .onReceive(timer) { _ in
             if !gameEnded {
-                if playerOneTimerActive && playerOneTime > 0 {
-                    playerOneTime -= 1
+                // Player One timer
+                if playerOneTimerActive {
+                    if timeType == .freeGame {
+                        playerOneTime += 1  // Time counts upwards in Free Game mode
+                    } else if playerOneTime > 0 {
+                        playerOneTime -= 1  // Time counts down for other modes
+                    }
                     checkForAlarm(for: .playerOne)
                 } else if playerOneTime <= 0 && playerOneTimerActive {
                     gameEnded = true
                     winner = playerTwoName
                 }
 
-                if playerTwoTimerActive && playerTwoTime > 0 {
-                    playerTwoTime -= 1
+                // Player Two timer
+                if playerTwoTimerActive {
+                    if timeType == .freeGame {
+                        playerTwoTime += 1  // Time counts upwards in Free Game mode
+                    } else if playerTwoTime > 0 {
+                        playerTwoTime -= 1  // Time counts down for other modes
+                    }
                     checkForAlarm(for: .playerTwo)
                 } else if playerTwoTime <= 0 && playerTwoTimerActive {
                     gameEnded = true
@@ -351,7 +363,7 @@ struct ChessClockView: View {
     private func toggleClock(for player: Player) {
         if gameEnded { return }
 
-        // Spela upp ljud när en spelare byter tur
+        // Play sound when switching turns
         playSound()
 
         switch player {
@@ -371,6 +383,7 @@ struct ChessClockView: View {
     }
 
     private func playSound() {
+        // Play sound only when switching turns
         guard let url = Bundle.main.url(forResource: "buttonClick", withExtension: "mp3") else { return }
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
@@ -381,7 +394,12 @@ struct ChessClockView: View {
     }
 
     private func checkForAlarm(for player: Player) {
-        // Play alarm sound 3 seconds before the end of sudden death
+        // Prevent alarm from playing in Free Game mode
+        if timeType == .freeGame {
+            return
+        }
+
+        // Play alarm sound 3 seconds before the end of sudden death or other time-based modes
         let timeToCheck: Int
         if player == .playerOne {
             timeToCheck = playerOneTime
@@ -405,8 +423,6 @@ struct ChessClockView: View {
         }
     }
 }
-
-
 
 enum Player {
     case playerOne, playerTwo
