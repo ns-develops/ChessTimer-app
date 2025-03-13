@@ -237,13 +237,14 @@ struct ChessClockView: View {
     @State private var playerTwoTimerActive: Bool = false
     @State private var gameEnded: Bool = false
     @State private var winner: String? = nil
-
+    @State private var alarmPlayed: Bool = false  // To avoid playing the alarm multiple times
     @State var playerOneName: String
     @State var playerTwoName: String
     @State private var timeType: TimeType
     @State private var suddenDeathTime: Date
 
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var audioPlayer: AVAudioPlayer?
 
     init(playerOneName: String, playerTwoName: String, timeType: TimeType, suddenDeathTime: Date) {
         self._playerOneName = State(initialValue: playerOneName)
@@ -252,13 +253,12 @@ struct ChessClockView: View {
         self._suddenDeathTime = State(initialValue: suddenDeathTime)
 
         if timeType == .bullet {
-            self._playerOneTime = State(initialValue: 120) // 2 minuter
-            self._playerTwoTime = State(initialValue: 120) // 2 minuter
+            self._playerOneTime = State(initialValue: 120)
+            self._playerTwoTime = State(initialValue: 120)
         } else if timeType == .classical {
-            self._playerOneTime = State(initialValue: 300) // 5 minuter
-            self._playerTwoTime = State(initialValue: 300) // 5 minuter
+            self._playerOneTime = State(initialValue: 300)
+            self._playerTwoTime = State(initialValue: 300)
         } else if timeType == .suddenDeath {
-    
             let calendar = Calendar.current
             let hour = calendar.component(.hour, from: suddenDeathTime)
             let minute = calendar.component(.minute, from: suddenDeathTime)
@@ -285,14 +285,9 @@ struct ChessClockView: View {
                         .foregroundColor(.white)
                         .padding()
                 } else {
-                    // Player One's Timer
                     Circle()
                         .fill(Color.white)
                         .frame(width: 200, height: 200)
-                        .overlay(
-                            Circle()
-                                .stroke(Color.black, lineWidth: 5)
-                        )
                         .overlay(
                             VStack {
                                 Text(playerOneName)
@@ -311,14 +306,9 @@ struct ChessClockView: View {
 
                     Spacer()
 
-                    // Player Two's Timer
                     Circle()
                         .fill(Color.white)
                         .frame(width: 200, height: 200)
-                        .overlay(
-                            Circle()
-                                .stroke(Color.black, lineWidth: 5)
-                        )
                         .overlay(
                             VStack {
                                 Text(playerTwoName)
@@ -339,40 +329,20 @@ struct ChessClockView: View {
         }
         .onReceive(timer) { _ in
             if !gameEnded {
-                if timeType == .suddenDeath {
-                    // För Sudden Death, räknar vi ner från den valda tiden
-                    if playerOneTimerActive && playerOneTime > 0 {
-                        playerOneTime -= 1
-                    } else if playerOneTime <= 0 && playerOneTimerActive {
-                        gameEnded = true
-                        winner = playerTwoName
-                    }
+                if playerOneTimerActive && playerOneTime > 0 {
+                    playerOneTime -= 1
+                    checkForAlarm(for: .playerOne)
+                } else if playerOneTime <= 0 && playerOneTimerActive {
+                    gameEnded = true
+                    winner = playerTwoName
+                }
 
-                    if playerTwoTimerActive && playerTwoTime > 0 {
-                        playerTwoTime -= 1
-                    } else if playerTwoTime <= 0 && playerTwoTimerActive {
-                        gameEnded = true
-                        winner = playerOneName
-                    }
-                } else {
-                    // För andra typer av spel (bullet, classical, freeGame)
-                    if playerOneTimerActive {
-                        if playerOneTime > 0 {
-                            playerOneTime -= 1
-                        } else {
-                            gameEnded = true
-                            winner = playerTwoName
-                        }
-                    }
-
-                    if playerTwoTimerActive {
-                        if playerTwoTime > 0 {
-                            playerTwoTime -= 1
-                        } else {
-                            gameEnded = true
-                            winner = playerOneName
-                        }
-                    }
+                if playerTwoTimerActive && playerTwoTime > 0 {
+                    playerTwoTime -= 1
+                    checkForAlarm(for: .playerTwo)
+                } else if playerTwoTime <= 0 && playerTwoTimerActive {
+                    gameEnded = true
+                    winner = playerOneName
                 }
             }
         }
@@ -381,23 +351,16 @@ struct ChessClockView: View {
     private func toggleClock(for player: Player) {
         if gameEnded { return }
 
+        // Spela upp ljud när en spelare byter tur
+        playSound()
+
         switch player {
         case .playerOne:
-            if playerOneTimerActive {
-                playerOneTimerActive = false
-                playerTwoTimerActive = true
-            } else {
-                playerOneTimerActive = true
-                playerTwoTimerActive = false
-            }
+            playerOneTimerActive.toggle()
+            playerTwoTimerActive.toggle()
         case .playerTwo:
-            if playerTwoTimerActive {
-                playerTwoTimerActive = false
-                playerOneTimerActive = true
-            } else {
-                playerTwoTimerActive = true
-                playerOneTimerActive = false
-            }
+            playerTwoTimerActive.toggle()
+            playerOneTimerActive.toggle()
         }
     }
 
@@ -406,7 +369,44 @@ struct ChessClockView: View {
         let seconds = timeRemaining % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
+
+    private func playSound() {
+        guard let url = Bundle.main.url(forResource: "buttonClick", withExtension: "mp3") else { return }
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Error playing sound: \(error.localizedDescription)")
+        }
+    }
+
+    private func checkForAlarm(for player: Player) {
+        // Play alarm sound 3 seconds before the end of sudden death
+        let timeToCheck: Int
+        if player == .playerOne {
+            timeToCheck = playerOneTime
+        } else {
+            timeToCheck = playerTwoTime
+        }
+
+        if timeToCheck <= 3 && !alarmPlayed {
+            playAlarm()
+            alarmPlayed = true // Ensure alarm is played only once
+        }
+    }
+
+    private func playAlarm() {
+        guard let url = Bundle.main.url(forResource: "alarmClock", withExtension: "mp3") else { return }
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.play()
+        } catch {
+            print("Error playing alarm sound: \(error.localizedDescription)")
+        }
+    }
 }
+
+
 
 enum Player {
     case playerOne, playerTwo

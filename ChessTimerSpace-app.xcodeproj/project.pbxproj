@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7083A26C2D8388B40051C7D4 /* alarmClock.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7083A26B2D8388B40051C7D4 /* alarmClock.mp3 */; };
 		709534942D807F65008726BA /* buttonClick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 709534932D807F65008726BA /* buttonClick.mp3 */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7083A26B2D8388B40051C7D4 /* alarmClock.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarmClock.mp3; sourceTree = "<group>"; };
 		709534662D805037008726BA /* ChessTimerSpace-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ChessTimerSpace-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		709534762D80503A008726BA /* ChessTimerSpace-appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ChessTimerSpace-appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		709534802D80503A008726BA /* ChessTimerSpace-appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ChessTimerSpace-appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,6 +82,7 @@
 		7095345D2D805037008726BA = {
 			isa = PBXGroup;
 			children = (
+				7083A26B2D8388B40051C7D4 /* alarmClock.mp3 */,
 				709534932D807F65008726BA /* buttonClick.mp3 */,
 				709534682D805037008726BA /* ChessTimerSpace-app */,
 				709534792D80503A008726BA /* ChessTimerSpace-appTests */,
@@ -218,6 +221,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7083A26C2D8388B40051C7D4 /* alarmClock.mp3 in Resources */,
 				709534942D807F65008726BA /* buttonClick.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

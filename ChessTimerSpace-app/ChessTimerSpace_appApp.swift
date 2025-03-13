@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct ChessTimerSpace_appApp: App {
+struct ChessTimerSpaceappApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
