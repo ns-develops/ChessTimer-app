@@ -1,0 +1,26 @@
+# Xcode-specific files
+*.xcuserstate
+*.xcodeproj/*
+*.xcworkspace/*
+DerivedData/
+build/
+
+# CocoaPods
+Pods/
+
+# Swift Package Manager
+.build/
+Package.resolved
+
+# macOS-specific files
+.DS_Store
+
+# Temporary files
+*.log
+*.tmp
+*.swp
+
+# Build files
+*.o
+*.pch
+*.app
